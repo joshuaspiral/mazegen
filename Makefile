@@ -1,11 +1,15 @@
 CXX=clang++
 CXXFLAGS=-Wall -Wextra -ggdb -O3 -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
-make all: main.cpp
-	$(CXX) $(CXXFLAGS) -o mazegen main.cpp -lm
+make all: lines.cpp grid.cpp
+	$(CXX) $(CXXFLAGS) -o grid grid.cpp -lm
+	$(CXX) $(CXXFLAGS) -o lines lines.cpp -lm
 
-lifec: main.cpp
-	$(CXX) $(CXXFLAGS) -o mazegen main.cpp -lm
+grid: grid.cpp
+	$(CXX) $(CXXFLAGS) -o grid grid.cpp -lm
+
+lines: lines.cpp
+	$(CXX) $(CXXFLAGS) -o lines lines.cpp -lm
 
 clean:
-	rm mazegen
+	rm grid lines
