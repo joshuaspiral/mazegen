@@ -13,4 +13,5 @@ $ ./mazegen
 ```
  
 # Details
-As always, I make a few implementations of the same program. Here is a grid version, that stores the maze in an array, and the lines version which only draws the maze.
+As always, I make a few implementations of the same program. Here is a grid version, that stores the maze in an array, and the lines version which only draws the maze.  
+You can edit the predefined HEIGHT/WIDTH and resolution in the config.h file.

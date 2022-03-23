@@ -5,10 +5,7 @@
 #include <string.h>
 #include <string>
 #include <vector>
-#define HEIGHT 1000
-#define WIDTH 1000
-#define SCREEN_HEIGHT 1000
-#define SCREEN_WIDTH 1000
+#include "config.h"
 
 using namespace std;
 bool grid[HEIGHT * WIDTH];
