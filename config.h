@@ -1,4 +1,4 @@
-#define HEIGHT 20
-#define WIDTH 20
+#define HEIGHT 500
+#define WIDTH 500
 #define SCREEN_HEIGHT 1000
 #define SCREEN_WIDTH 1000

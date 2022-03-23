@@ -91,7 +91,7 @@ int main() {
         wallArray[i] = Walls{1, 1, 1, 1};
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Maze Generator");
-    SetTargetFPS(60);
+    SetTargetFPS(1000);
     srand(time(0));
     visited[0] = true; // mark beginning as visited
     stck.push(0);
