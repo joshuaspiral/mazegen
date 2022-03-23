@@ -92,16 +92,10 @@ void mazeGen(int initial) {
             stck.push(current);
 
             std::random_shuffle(currNeighbours.begin(), currNeighbours.end()); 
-            for (int neighbour : currNeighbours) {
-                if (visited[neighbour])
-                    continue;
-                else {
-                    removeWall(current, neighbour, &wallArray[current], &wallArray[neighbour]);
-                    visited[neighbour] = true;
-                    stck.push(neighbour);
-                    break;
-                }
-            }
+            int next = currNeighbours[0];
+            removeWall(current, next, &wallArray[current], &wallArray[next]);
+            visited[next] = true;
+            stck.push(next);
         }
     }
 }
