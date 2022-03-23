@@ -5,62 +5,80 @@
 #include <string.h>
 #include <string>
 #include <vector>
-#define HEIGHT 20
-#define WIDTH 20
+#define HEIGHT 50
+#define WIDTH 50
 #define SCREEN_HEIGHT 1000
 #define SCREEN_WIDTH 1000
 
 using namespace std;
 
+typedef struct {
+    bool north;
+    bool east;
+    bool south;
+    bool west;
+} Walls;
+
 int cellWidth = SCREEN_WIDTH / WIDTH;
 int cellHeight = SCREEN_HEIGHT / HEIGHT;
 
-pair<bool, bool> wallArray[HEIGHT * WIDTH]; // East wall then south wall
+Walls wallArray[HEIGHT * WIDTH]; 
 int visited[HEIGHT * WIDTH];
 stack<int> stck;
 
-void drawCell(int n, pair<bool, bool> walls) {
+void drawCell(int n, Walls walls) {
     int r = n / WIDTH;
     int c = n % WIDTH;
     int screenX = c * cellWidth;
     int screenY = r * cellHeight;
-    if (walls.first)
+    if (walls.east)
         DrawLine(screenX + cellWidth, screenY, screenX + cellWidth,
                 screenY + cellHeight, BLACK);
-    if (walls.second)
+    if (walls.south)
         DrawLine(screenX, screenY + cellHeight, screenX + cellWidth,
                 screenY + cellHeight, BLACK);
 }
 
-void removeWall(int n1, int n2, pair<bool, bool> *walls) {
-    if (n2 - n1 == 1)
-        walls->first = false;
-    else if (n2 - WIDTH == n1)
-        walls->second = false;
-    else {
-        cout << "COULD NOT REMOVE WALL" << endl;
-        cout << n1 << " " << n2 << endl;
+void removeWall(int a, int b, Walls *aWalls, Walls *bWalls) {
+    if (b - a == 1) {
+        aWalls->east = false;
+        bWalls->west = false;
+    }
+    else if (b - a == -1) {
+        aWalls->west = false;
+        bWalls->east = false;
+    }
+    else if (b - a == WIDTH) {
+        aWalls->south = false;
+        bWalls->north = false;
+    }
+    else if (b - a == -WIDTH) {
+        aWalls->north = false;
+        bWalls->south = false;
     }
 }
 
 vector<int> getNeighbours(int n) {
+    int r = n / WIDTH;
+    int c = n % WIDTH;
     vector<int> neighbours;
-    if (n - WIDTH >= 0)
+    if (r - 1 >= 0)
         if (!visited[n - WIDTH])
             neighbours.push_back(n - WIDTH);
-    if (n + WIDTH < WIDTH * HEIGHT)
+    if (r + 1 < HEIGHT)
         if (!visited[n + WIDTH])
             neighbours.push_back(n + WIDTH);
-    if (n + 1 < WIDTH * HEIGHT)
+    if (c + 1 < WIDTH)
         if (!visited[n + 1])
             neighbours.push_back(n + 1);
-    if (n - 1 >= 0)
+    if (c - 1 >= 0)
         if (!visited[n - 1])
             neighbours.push_back(n - 1);
     return neighbours;
 }
 
 void mazeGen(int initial) {
+    srand(time(0));
     // Initial setup
     visited[initial] = true; // mark initial as visited
     stck.push(initial);
@@ -73,12 +91,15 @@ void mazeGen(int initial) {
         if (currNeighbours.size()) {
             stck.push(current);
 
-            /* std::random_shuffle(currNeighbours.begin(), currNeighbours.end()); */ // shuffle neighbours
+            std::random_shuffle(currNeighbours.begin(), currNeighbours.end()); 
             for (int neighbour : currNeighbours) {
-                if (!visited[neighbour]) {
-                    removeWall(current, neighbour, &wallArray[current]);
+                if (visited[neighbour])
+                    continue;
+                else {
+                    removeWall(current, neighbour, &wallArray[current], &wallArray[neighbour]);
                     visited[neighbour] = true;
                     stck.push(neighbour);
+                    break;
                 }
             }
         }
@@ -90,14 +111,13 @@ int main() {
             HEIGHT * WIDTH * sizeof(int)); // set all elements to unvisited
 
     for (int i = 0; i < HEIGHT * WIDTH; i++)
-        wallArray[i] = pair<bool, bool>{1, 1};
+        wallArray[i] = Walls {1, 1, 1, 1};
 
     mazeGen(0);
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Maze Generator");
     SetTargetFPS(60);
 
-    removeWall(0, 20, &wallArray[0]);
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(WHITE);
